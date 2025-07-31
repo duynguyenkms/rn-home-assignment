@@ -53,6 +53,8 @@ The first time you create a new project, run the Ruby bundler to install CocoaPo
 bundle install
 ```
 
+**Notes:** To run the above command, make sure your machine already installed ruby >= 2.6.10
+
 Then, and every time you update your native dependencies, run:
 
 ```sh
