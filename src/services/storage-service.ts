@@ -14,6 +14,7 @@ class StorageService {
     // name of the storage file
     id: 'TODO_STORAGE',
     // `encryptionKey` allows us to encrypt saving data to make the app more secure
+    // To protect this key, we will store it by `react-native-keys`
     encryptionKey: Keys.secureFor('STORAGE_ENCRYPTION_KEY'),
   });
 

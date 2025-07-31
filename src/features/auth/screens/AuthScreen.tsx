@@ -34,7 +34,7 @@ const AuthScreen = () => {
     const result = await authenticate();
 
     const errorTitle = 'Failed to authenticate';
-    if (result.status === 'error') {
+    if (result.status === 'error' && result.error?.message !== 'user_cancel') {
       Alert.alert(errorTitle, 'An error occurs while authenticating');
     }
 
