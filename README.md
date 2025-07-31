@@ -1,13 +1,15 @@
-# Todo App
+# 🎯 Todo App
 
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+This project using [`@react-native-community/cli`](https://github.com/react-native-community/cli) as a starter template.
 
 #### Technical stack:
 
 - React Native `0.79.5`
 - React `19.0.0`
 - State Management: 🐻 Zustand (https://github.com/pmndrs/zustand). It's simple, easy to use and reduce boilerplate
-- Storage: `react-native-mmkv` (https://github.com/mrousavy/react-native-mmkv). Fast storage written in pure C++ with fully JSI support
+- Storage:
+  - `react-native-mmkv` (https://github.com/mrousavy/react-native-mmkv). Fast storage written in pure C++ with fully JSI support
+  - `react-native-keys` (https://github.com/numandev1/react-native-keys) to protect secret keys
 
 ## I. Guide to run app
 
