@@ -12,3 +12,4 @@ export * from './Header';
 export * from './LoadingView';
 export * from './Divider';
 export * from './Menu';
+export * from './Portal';

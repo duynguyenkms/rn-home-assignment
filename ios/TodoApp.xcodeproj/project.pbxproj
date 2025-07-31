@@ -21,6 +21,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		04578E9A2E3BCA40001B5A14 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* TodoApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TodoApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = TodoApp/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = TodoApp/Info.plist; sourceTree = "<group>"; };
@@ -30,13 +31,13 @@
 		5709B34CF0A7D63546082F79 /* Pods-TodoApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodoApp.release.xcconfig"; path = "Target Support Files/Pods-TodoApp/Pods-TodoApp.release.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-TodoApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TodoApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = TodoApp/AppDelegate.swift; sourceTree = "<group>"; };
-		78510B22C55B46A8A3C5EF1F /* Lexend-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Lexend-SemiBold.ttf"; path = "../src/assets/fonts/Lexend/Lexend-SemiBold.ttf"; sourceTree = "<group>"; };
+		78510B22C55B46A8A3C5EF1F /* Lexend-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Lexend-SemiBold.ttf"; path = "../src/assets/fonts/Lexend/Lexend-SemiBold.ttf"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = TodoApp/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		8725E44059884FC0B13BB61C /* Lexend-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Lexend-Regular.ttf"; path = "../src/assets/fonts/Lexend/Lexend-Regular.ttf"; sourceTree = "<group>"; };
-		A178AA559A184506A4C87850 /* Lexend-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Lexend-Medium.ttf"; path = "../src/assets/fonts/Lexend/Lexend-Medium.ttf"; sourceTree = "<group>"; };
-		CEFB1B75978A4B068AE12B22 /* Lexend-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Lexend-Light.ttf"; path = "../src/assets/fonts/Lexend/Lexend-Light.ttf"; sourceTree = "<group>"; };
+		8725E44059884FC0B13BB61C /* Lexend-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Lexend-Regular.ttf"; path = "../src/assets/fonts/Lexend/Lexend-Regular.ttf"; sourceTree = "<group>"; };
+		A178AA559A184506A4C87850 /* Lexend-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Lexend-Medium.ttf"; path = "../src/assets/fonts/Lexend/Lexend-Medium.ttf"; sourceTree = "<group>"; };
+		CEFB1B75978A4B068AE12B22 /* Lexend-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Lexend-Light.ttf"; path = "../src/assets/fonts/Lexend/Lexend-Light.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		FBCF1923CA0D452D95CB7C24 /* Lexend-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Lexend-Bold.ttf"; path = "../src/assets/fonts/Lexend/Lexend-Bold.ttf"; sourceTree = "<group>"; };
+		FBCF1923CA0D452D95CB7C24 /* Lexend-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Lexend-Bold.ttf"; path = "../src/assets/fonts/Lexend/Lexend-Bold.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +83,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				04578E9A2E3BCA40001B5A14 /* Config.xcconfig */,
 				13B07FAE1A68108700A75B9A /* TodoApp */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
@@ -122,7 +124,6 @@
 				78510B22C55B46A8A3C5EF1F /* Lexend-SemiBold.ttf */,
 			);
 			name = Resources;
-			path = "";
 			sourceTree = "<group>";
 		};
 		F9D484076A95DF08CBB050DB /* TodoApp */ = {
@@ -380,6 +381,7 @@
 		};
 		83CBBA201A601CBA00E9B192 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 04578E9A2E3BCA40001B5A14 /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -460,6 +462,7 @@
 		};
 		83CBBA211A601CBA00E9B192 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 04578E9A2E3BCA40001B5A14 /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;

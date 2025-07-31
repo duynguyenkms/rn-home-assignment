@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Icons } from '@/assets/icons';
-import { FloatingActionButton, Modal } from '@/components';
+import { FloatingActionButton, useModal } from '@/components';
 import { Todo } from '@/entities';
 import { ScreenContainer, SegmentedPage } from '@/layouts';
 import { useAuthStore, useTodoStore } from '@/store';
@@ -16,22 +16,15 @@ import { TouchableOpacity } from 'react-native';
 const TODO_PAGE_INDEX = 0;
 
 const TodoScreen = () => {
-  const [showCreateTodoModal, setShowCreateTodoModal] =
-    useState<boolean>(false);
-  const [showUpdateTodoModal, setShowUpdateTodoModal] =
-    useState<boolean>(false);
   const [selectedPageIndex, setSelectedPageIndex] =
     useState<number>(TODO_PAGE_INDEX);
 
-  // Temporary todo object ref to hold data for update form
-  const updatingTodoRef = useRef<Todo>(undefined);
+  const modal = useModal();
 
-  const {
-    todos: allTodos,
-    addTodo,
-    updateTodo,
-    getTodos,
-  } = useTodoStore(state => state);
+  const allTodos = useTodoStore(state => state.todos);
+  const addTodo = useTodoStore(state => state.addTodo);
+  const getTodos = useTodoStore(state => state.getTodos);
+  const resetCheckedTodos = useTodoStore(state => state.resetCheckedTodos);
 
   const todoTasks = allTodos.filter(todo => !todo.completed);
   const completedTasks = allTodos.filter(todo => todo.completed);
@@ -46,33 +39,27 @@ const TodoScreen = () => {
     );
   }, [logout]);
 
-  const handleChangeSelectedPageIndex = useCallback((index: number) => {
-    setSelectedPageIndex(index);
-  }, []);
+  const handleChangeSelectedPageIndex = useCallback(
+    (index: number) => {
+      setSelectedPageIndex(index);
+      resetCheckedTodos();
+    },
+    [resetCheckedTodos],
+  );
 
-  const handleShowCreateTodoForm = useCallback(() => {
-    setShowCreateTodoModal(true);
-  }, []);
-
-  const handleSubmitCreateTodo = useCallback(
+  const handleCreateTodo = useCallback(
     (todo: Todo) => {
       addTodo(todo);
     },
     [addTodo],
   );
 
-  const handleSubmitUpdateTodo = useCallback(
-    (todo: Todo) => {
-      updateTodo(todo);
-      updatingTodoRef.current = undefined;
-    },
-    [updateTodo],
-  );
-
-  const handleEditTodo = useCallback((todo: Todo) => {
-    updatingTodoRef.current = todo;
-    setShowUpdateTodoModal(true);
-  }, []);
+  const onPressFloatingActionButton = useCallback(() => {
+    modal.present({
+      title: 'Create todo',
+      component: <TodoForm mode="create" onSubmit={handleCreateTodo} />,
+    });
+  }, [modal, handleCreateTodo]);
 
   useEffect(() => {
     getTodos();
@@ -80,11 +67,11 @@ const TodoScreen = () => {
 
   return (
     <ScreenContainer
-      title="Welcome ✨"
+      title="Todo App 🎯"
       action={renderLogoutButton()}
       fab={
         selectedPageIndex === 0 && (
-          <FloatingActionButton onPress={handleShowCreateTodoForm}>
+          <FloatingActionButton onPress={onPressFloatingActionButton}>
             <Icons.Plus color={Color.surface} width={24} height={24} />
           </FloatingActionButton>
         )
@@ -97,9 +84,9 @@ const TodoScreen = () => {
             title: 'Todo',
             render: () => (
               <TodoList
+                allowCompleteTask
                 title="Todo Tasks"
                 todos={todoTasks}
-                onEditTodo={handleEditTodo}
                 emptyComponent={<TodoEmpty />}
               />
             ),
@@ -110,7 +97,6 @@ const TodoScreen = () => {
               <TodoList
                 title="Completed Tasks"
                 todos={completedTasks}
-                onEditTodo={handleEditTodo}
                 emptyComponent={
                   <CompletedTaskEmpty
                     onActionPress={() => setSelectedPageIndex(TODO_PAGE_INDEX)}
@@ -121,23 +107,6 @@ const TodoScreen = () => {
           },
         ]}
       />
-      <Modal
-        visible={showCreateTodoModal}
-        onClose={() => setShowCreateTodoModal(false)}
-        title="Create todo">
-        <TodoForm mode="create" onSubmit={handleSubmitCreateTodo} />
-      </Modal>
-      <Modal
-        visible={showUpdateTodoModal}
-        onClose={() => setShowUpdateTodoModal(false)}
-        title="Update todo">
-        <TodoForm
-          mode="update"
-          todo={updatingTodoRef.current}
-          onClose={() => setShowUpdateTodoModal(false)}
-          onSubmit={handleSubmitUpdateTodo}
-        />
-      </Modal>
     </ScreenContainer>
   );
 };

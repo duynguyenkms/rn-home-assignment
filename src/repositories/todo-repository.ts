@@ -44,6 +44,19 @@ class TodoRepository {
 
     storageService.setJson(TODO_STORAGE_KEY, { todos });
   }
+
+  updateList(todoMap: Record<string, Todo>) {
+    const todos = this.getAll();
+
+    for (let i = 0; i < todos.length; i++) {
+      const todoItem = todos[i];
+      if (todoMap[todoItem.id]) {
+        todos[i] = todoMap[todoItem.id];
+      }
+    }
+
+    storageService.setJson(TODO_STORAGE_KEY, { todos });
+  }
 }
 
 export const todoRepository = new TodoRepository();

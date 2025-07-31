@@ -1,5 +1,6 @@
 export type AppColors = {
   primary: string;
+  primaryLight: string;
   background: string;
   surface: string;
   text: {
@@ -8,7 +9,4 @@ export type AppColors = {
   };
   border: string;
   danger: string;
-  dangerLight: string;
-  info: string;
-  infoLight: string;
 };

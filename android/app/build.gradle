@@ -117,3 +117,10 @@ dependencies {
         implementation jscFlavor
     }
 }
+
+project.ext.keyFiles = [
+  debug: "keys.json",
+  release: "keys.json",
+]
+
+apply from: project(':react-native-keys').projectDir.getPath() + "/RNKeys.gradle"

@@ -57,7 +57,7 @@ const MenuItem = ({ title, danger, icon, onPress }: MenuItemProps) => {
   );
 };
 
-export { Menu };
+export { Menu, type MenuItemWithKeyProps };
 
 const styles = StyleSheet.create({
   container: {

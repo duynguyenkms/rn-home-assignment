@@ -7,13 +7,14 @@
  */
 
 import { MMKV } from 'react-native-mmkv';
+import Keys from 'react-native-keys';
 
 class StorageService {
   mmkv = new MMKV({
     // name of the storage file
     id: 'TODO_STORAGE',
     // `encryptionKey` allows us to encrypt saving data to make the app more secure
-    encryptionKey: 'f05aa585f7a9470dbb602cfebb98eaa9',
+    encryptionKey: Keys.secureFor('STORAGE_ENCRYPTION_KEY'),
   });
 
   getJson(key: string) {

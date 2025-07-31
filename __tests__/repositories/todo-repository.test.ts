@@ -1,5 +1,6 @@
-import { todoRepository } from '@/repositories/todo-repository';
+import { storageService } from '@/services';
 import { Todo } from '@/entities';
+import { todoRepository } from '@/repositories';
 
 jest.mock('@/services', () => ({
   storageService: {
@@ -8,93 +9,140 @@ jest.mock('@/services', () => ({
   },
 }));
 
-jest.mock('@/utils', () => ({
-  safeCast: jest.fn(),
-}));
-
-import { storageService } from '@/services';
-import { safeCast } from '@/utils';
-
-describe('todoRepository', () => {
-  const mockTodos: Todo[] = [
-    { id: '1', title: 'Test 1', description: '' },
-    { id: '2', title: 'Test 2', description: '' },
-  ];
-
-  const mockGetJson = storageService.getJson as jest.Mock;
-  const mockSetJson = storageService.setJson as jest.Mock;
-  const mockSafeCast = safeCast as jest.Mock;
-
+describe('TodoRepository', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('getAll should return todos from storage', () => {
-    mockGetJson.mockReturnValue({ todos: mockTodos });
-    mockSafeCast.mockReturnValue({ todos: mockTodos });
+  describe('getAll', () => {
+    it('should return all todos if present', () => {
+      const todos: Todo[] = [{ id: '1', title: 'Test', completed: false }];
+      (storageService.getJson as jest.Mock).mockReturnValue({ todos });
 
-    const result = todoRepository.getAll();
+      const result = todoRepository.getAll();
+      expect(result).toEqual(todos);
+    });
 
-    expect(result).toEqual(mockTodos);
-  });
+    it('should return empty array if no data', () => {
+      (storageService.getJson as jest.Mock).mockReturnValue(undefined);
 
-  it('getAll should return empty array if no data', () => {
-    mockGetJson.mockReturnValue(null);
+      const result = todoRepository.getAll();
+      expect(result).toEqual([]);
+    });
 
-    const result = todoRepository.getAll();
+    it('should return empty array if invalid shape', () => {
+      (storageService.getJson as jest.Mock).mockReturnValue(null);
 
-    expect(result).toEqual([]);
-  });
-
-  it('add should store new todo', () => {
-    const newTodo: Todo = { id: '3', title: 'New Todo', description: '' };
-
-    mockGetJson.mockReturnValue({ todos: mockTodos });
-    mockSafeCast.mockReturnValue({ todos: [...mockTodos] });
-
-    todoRepository.add(newTodo);
-
-    expect(mockSetJson).toHaveBeenCalledWith('TODO', {
-      todos: [...mockTodos, newTodo],
+      const result = todoRepository.getAll();
+      expect(result).toEqual([]);
     });
   });
 
-  it('removeById should remove a todo by id', () => {
-    mockGetJson.mockReturnValue({ todos: mockTodos });
-    mockSafeCast.mockReturnValue({ todos: mockTodos });
+  describe('add', () => {
+    it('should add a todo to storage', () => {
+      const existingTodos: Todo[] = [];
+      const newTodo: Todo = { id: '2', title: 'New Todo', completed: false };
 
-    todoRepository.removeById('1');
+      (storageService.getJson as jest.Mock).mockReturnValue({
+        todos: existingTodos,
+      });
 
-    expect(mockSetJson).toHaveBeenCalledWith('TODO', {
-      todos: [mockTodos[1]],
+      todoRepository.add(newTodo);
+
+      expect(storageService.setJson).toHaveBeenCalledWith('TODO', {
+        todos: [newTodo],
+      });
     });
   });
 
-  it('update should modify an existing todo', () => {
-    const updatedTodo: Todo = {
-      id: '1',
-      title: 'Updated',
-      description: 'Updated Desc',
-    };
+  describe('removeById', () => {
+    it('should remove the correct todo by id', () => {
+      const todos: Todo[] = [
+        { id: '1', title: 'A', completed: false },
+        { id: '2', title: 'B', completed: false },
+      ];
+      (storageService.getJson as jest.Mock).mockReturnValue({ todos });
 
-    mockGetJson.mockReturnValue({ todos: [...mockTodos] });
-    mockSafeCast.mockReturnValue({ todos: [...mockTodos] });
+      todoRepository.removeById('1');
 
-    todoRepository.update(updatedTodo);
-
-    expect(mockSetJson).toHaveBeenCalledWith('TODO', {
-      todos: [updatedTodo, mockTodos[1]],
+      expect(storageService.setJson).toHaveBeenCalledWith('TODO', {
+        todos: [{ id: '2', title: 'B', completed: false }],
+      });
     });
   });
 
-  it('update should do nothing if todo not found', () => {
-    mockGetJson.mockReturnValue({ todos: [...mockTodos] });
-    mockSafeCast.mockReturnValue({ todos: [...mockTodos] });
+  describe('update', () => {
+    it('should update an existing todo', () => {
+      const todos: Todo[] = [{ id: '1', title: 'Old', completed: false }];
+      const updated: Todo = { id: '1', title: 'Updated', completed: true };
 
-    const unknownTodo: Todo = { id: '99', title: '???', description: '' };
+      (storageService.getJson as jest.Mock).mockReturnValue({ todos });
 
-    todoRepository.update(unknownTodo);
+      todoRepository.update(updated);
 
-    expect(mockSetJson).not.toHaveBeenCalled();
+      expect(storageService.setJson).toHaveBeenCalledWith('TODO', {
+        todos: [updated],
+      });
+    });
+
+    it('should not update if todo id does not exist', () => {
+      const todos: Todo[] = [{ id: '1', title: 'Existing', completed: false }];
+      const notFoundTodo: Todo = { id: '999', title: 'Ghost', completed: true };
+
+      (storageService.getJson as jest.Mock).mockReturnValue({ todos });
+
+      todoRepository.update(notFoundTodo);
+
+      expect(storageService.setJson).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('updateList', () => {
+    it('should update multiple todos in the list', () => {
+      const todos: Todo[] = [
+        { id: '1', title: 'A', completed: false },
+        { id: '2', title: 'B', completed: false },
+        { id: '3', title: 'C', completed: false },
+      ];
+      const map: Record<string, Todo> = {
+        '2': { id: '2', title: 'B Updated', completed: true },
+        '3': { id: '3', title: 'C Updated', completed: true },
+      };
+
+      (storageService.getJson as jest.Mock).mockReturnValue({ todos });
+
+      todoRepository.updateList(map);
+
+      expect(storageService.setJson).toHaveBeenCalledWith('TODO', {
+        todos: [
+          { id: '1', title: 'A', completed: false },
+          { id: '2', title: 'B Updated', completed: true },
+          { id: '3', title: 'C Updated', completed: true },
+        ],
+      });
+    });
+
+    it('should leave todos unchanged if not in the map', () => {
+      const todos: Todo[] = [{ id: '1', title: 'A', completed: false }];
+      (storageService.getJson as jest.Mock).mockReturnValue({ todos });
+
+      todoRepository.updateList({});
+
+      expect(storageService.setJson).toHaveBeenCalledWith('TODO', {
+        todos,
+      });
+    });
+
+    it('should handle empty storage gracefully', () => {
+      (storageService.getJson as jest.Mock).mockReturnValue(undefined);
+
+      todoRepository.updateList({
+        '1': { id: '1', title: 'Should Not Crash', completed: true },
+      });
+
+      expect(storageService.setJson).toHaveBeenCalledWith('TODO', {
+        todos: [],
+      });
+    });
   });
 });

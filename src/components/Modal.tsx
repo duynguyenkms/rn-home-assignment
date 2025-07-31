@@ -1,26 +1,44 @@
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import RNModal from 'react-native-modal';
 import { Icons } from '@/assets/icons';
 import { Color } from '@/themes';
 import { Text } from './Text';
 import { Spacer } from './Spacer';
+import { usePortal } from './Portal';
 
 type ModalProps = React.PropsWithChildren<{
+  id: string;
   title?: string;
-  visible?: boolean;
-  onClose?: () => void;
 }>;
 
-const Modal = ({ title, visible = false, onClose, children }: ModalProps) => {
+type PresentOptions = {
+  title?: string;
+  component: React.ReactNode;
+};
+
+const Modal = ({ id, title, children }: ModalProps) => {
+  const [visible, setVisible] = useState<boolean>(true);
+
+  const { dismiss } = useModal();
+
+  const handleClose = useCallback(() => {
+    setVisible(false);
+    dismiss(id);
+  }, [dismiss, id]);
+
   return (
-    <RNModal isVisible={visible} onBackdropPress={onClose} avoidKeyboard>
+    <RNModal
+      isVisible={visible}
+      onBackdropPress={handleClose}
+      avoidKeyboard
+      animationIn="fadeIn">
       <View style={styles.container}>
         <View style={styles.header}>
           <Text size="medium" weight="semiBold">
             {title}
           </Text>
-          <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+          <TouchableOpacity onPress={handleClose} style={styles.closeButton}>
             <View>
               <Icons.Close width={20} height={20} color={Color.text.primary} />
             </View>
@@ -33,7 +51,21 @@ const Modal = ({ title, visible = false, onClose, children }: ModalProps) => {
   );
 };
 
-export { Modal };
+const useModal = () => {
+  const portal = usePortal();
+
+  const present = ({ title, component }: PresentOptions): string => {
+    return portal.present(id => (
+      <Modal id={id} title={title}>
+        {component}
+      </Modal>
+    ));
+  };
+
+  return { present, dismiss: portal.dismiss };
+};
+
+export { Modal, useModal };
 
 const styles = StyleSheet.create({
   container: {

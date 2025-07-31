@@ -1,36 +1,104 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Icons } from '@/assets/icons';
-import { Menu, Spacer, Text } from '@/components';
+import {
+  Menu,
+  MenuItemWithKeyProps,
+  Spacer,
+  Text,
+  useModal,
+} from '@/components';
 import { Todo } from '@/entities';
 import { useTodoStore } from '@/store';
 import { Color } from '@/themes';
-import { StyleSheet, View } from 'react-native';
+import {
+  StyleProp,
+  StyleSheet,
+  TextStyle,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import { TodoForm } from './TodoForm';
+import { TodoDeleteConfirmation } from './TodoDeleteConfirmation';
 
 type TodoItemProps = {
   todo: Todo;
-  checkable?: boolean;
-  checked?: boolean;
-  onCheck?: (checked: boolean) => void;
-  onEdit: (item: Todo) => void;
 };
 
-const TodoItem = ({
-  todo,
-  checkable = false,
-  checked = false,
-  onCheck,
-  onEdit,
-}: TodoItemProps) => {
+const TodoItem = ({ todo }: TodoItemProps) => {
+  const modal = useModal();
+  const checkedTodoIds = useTodoStore(state => state.checkedTodoIds);
   const removeTodo = useTodoStore(state => state.removeTodo);
+  const updateTodo = useTodoStore(state => state.updateTodo);
+  const toggleCheckTodo = useTodoStore(state => state.toggleCheckTodo);
 
-  const handleRemove = useCallback(() => {
-    removeTodo(todo.id);
-  }, [todo, removeTodo]);
+  const isChecked = checkedTodoIds.includes(todo.id);
 
-  const handleEdit = useCallback(() => {
-    onEdit(todo);
-  }, [onEdit, todo]);
+  const textStyle: StyleProp<TextStyle> = {
+    textDecorationLine: isChecked ? 'line-through' : 'none',
+  };
+
+  const onRemove = useCallback(() => {
+    const modalId = modal.present({
+      title: 'Delete Confirmation',
+      component: (
+        <TodoDeleteConfirmation
+          onCancel={() => modal.dismiss(modalId)}
+          onConfirm={() => {
+            removeTodo(todo.id);
+            modal.dismiss(modalId);
+          }}
+        />
+      ),
+    });
+  }, [modal, removeTodo, todo.id]);
+
+  const handleUpdate = useCallback(
+    (newTodo: Todo) => {
+      updateTodo(newTodo);
+    },
+    [updateTodo],
+  );
+
+  const onUpdate = useCallback(() => {
+    const modalId = modal.present({
+      title: 'Update todo',
+      component: (
+        <TodoForm
+          mode="update"
+          todo={todo}
+          onClose={() => modal.dismiss(modalId)}
+          onSubmit={handleUpdate}
+        />
+      ),
+    });
+  }, [handleUpdate, modal, todo]);
+
+  const menuItems: MenuItemWithKeyProps[] = useMemo(() => {
+    const items = [
+      {
+        key: 'delete_option',
+        title: 'Delete',
+        icon: <Icons.Trash width={16} height={16} color={Color.danger} />,
+        danger: true,
+        onPress: onRemove,
+      },
+    ];
+    if (!todo.completed) {
+      items.unshift({
+        key: 'edit_option',
+        title: 'Edit',
+        icon: <Icons.Edit width={16} height={16} color={Color.text.primary} />,
+        danger: false,
+        onPress: onUpdate,
+      });
+    }
+    return items;
+  }, [onRemove, onUpdate, todo.completed]);
+
+  const onCheck = useCallback(() => {
+    toggleCheckTodo(todo.id);
+  }, [todo.id, toggleCheckTodo]);
 
   const renderMoreButton = useCallback(() => {
     return (
@@ -41,12 +109,15 @@ const TodoItem = ({
   }, []);
 
   return (
-    <View style={styles.container}>
-      {checkable && (
+    <TouchableOpacity
+      style={styles.container}
+      onPress={onCheck}
+      disabled={todo.completed}>
+      {!todo.completed && (
         <BouncyCheckbox
           disableText
           useBuiltInState={false}
-          isChecked={checked}
+          isChecked={isChecked}
           size={20}
           fillColor={Color.primary}
           onPress={onCheck}
@@ -55,39 +126,23 @@ const TodoItem = ({
       )}
       <View style={styles.subContainer}>
         <View style={styles.textContainer}>
-          <Text size="medium" weight="medium">
+          <Text size="medium" weight="medium" style={textStyle}>
             {todo.title}
           </Text>
           {todo.description && (
-            <Text type="secondary" size="small" weight="light">
+            <Text
+              type="secondary"
+              size="small"
+              weight="light"
+              style={textStyle}>
               {todo.description}
             </Text>
           )}
         </View>
         <Spacer width={12} />
-        <Menu
-          items={[
-            {
-              key: 'edit_option',
-              title: 'Edit',
-              icon: (
-                <Icons.Edit width={16} height={16} color={Color.text.primary} />
-              ),
-              danger: false,
-              onPress: handleEdit,
-            },
-            {
-              key: 'delete_option',
-              title: 'Delete',
-              icon: <Icons.Trash width={16} height={16} color={Color.danger} />,
-              danger: true,
-              onPress: handleRemove,
-            },
-          ]}>
-          {renderMoreButton()}
-        </Menu>
+        <Menu items={menuItems}>{renderMoreButton()}</Menu>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -125,12 +180,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignSelf: 'flex-start',
     padding: 8,
-  },
-  removeButton: {
-    backgroundColor: Color.dangerLight,
-  },
-  editButton: {
-    backgroundColor: Color.infoLight,
   },
   moreButton: {
     backgroundColor: '#eeeeee',
