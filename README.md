@@ -2,7 +2,7 @@
 
 | Demonstration       |
 | ------------------- |
-| ![Demo](./demo.gif) |
+| <img src="https://github.com/user-attachments/assets/47d2f236-4ea9-4e5b-8f8c-68321b36e13e" width="300" />|
 
 This project using [`@react-native-community/cli`](https://github.com/react-native-community/cli) as a starter template.
 
