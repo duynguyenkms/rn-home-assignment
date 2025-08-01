@@ -1,5 +1,9 @@
 # 🎯 Todo App
 
+| Demonstration       |
+| ------------------- |
+| ![Demo](./demo.gif) |
+
 This project using [`@react-native-community/cli`](https://github.com/react-native-community/cli) as a starter template.
 
 #### Technical stack:
